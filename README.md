@@ -4,6 +4,8 @@ DWARVES MANAGER, NES version
 
 This is a port of the (popular?) Android game Dwarves Manager for the Nintendo Entertainment System.
 
+<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn1.png" align="center" height="200"></a>
+
 How to play :
 -------------
 - Load the .nes rom in your favorite NES emulator
@@ -24,7 +26,6 @@ How to compile: download CC65 from http://cc65.org/, and see/modify build.bat ac
 This project use Shiru's Neslib NES library, and an example project was used as startup code.
 More information about NES programming and tutorials on Shiru's website : http://shiru.untergrund.net
 
-<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn1.png" align="left" height="350"></a>
-<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn2.png" align="left" height="350"></a>
-<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn3.png" align="left" height="350"></a>
-<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn4.png" align="left" height="350"></a>
+<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn2.png" align="left" height="200"></a>
+<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn3.png" align="left" height="200"></a>
+<a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn4.png" align="left" height="200"></a>
