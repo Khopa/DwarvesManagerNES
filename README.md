@@ -2,7 +2,7 @@
 DWARVES MANAGER, NES version
 ============================
 
-This is a port of the (popular?) Android game Dwarves Manager for the Nintendo Entertainment System.
+This is a demake of my Android game "Dwarves Manager" for the Nintendo Entertainment System, and was an entry for the Ludum Dare Game Jam 29.
 
 <a href="url"><img src="https://raw.github.com/Khopa/DwarvesManagerNES/master/dwn1.png" align="center" height="200"></a>
 
