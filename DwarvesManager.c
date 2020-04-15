@@ -90,8 +90,8 @@ void setMenuState(){
 	oam_clear();
 	ppu_off();
 	STATE = ST_MENU;
-	set_vram_update(0,NULL);
-	unrle_vram(title,0x2000);
+	set_vram_update(NULL);
+	vram_unrle(title);
 	pal_bright(4);
 	put_str(NTADR(6,16), "PRESS START TO BEGIN");
 	ppu_on_all();
@@ -102,8 +102,8 @@ void setInstructionsState(){
 	oam_clear();
 	ppu_off();
 	STATE = ST_INSTRUCTIONS;
-	set_vram_update(0,NULL);
-	unrle_vram(instructions,0x2000);
+	set_vram_update(NULL);
+	vram_unrle(instructions);
 	pal_bright(4);
 	ppu_on_all();
 }
@@ -113,7 +113,7 @@ void setGameState(){
 	oam_clear();
 	ppu_off();
 	STATE = ST_GAME;
-	unrle_vram(map,0x2000);
+	vram_unrle(map);
 
 	// init dwarves
 	for(i=0;i<DWARVES_COUNT;i++){
@@ -131,7 +131,7 @@ void setGameState(){
 	pal_spr(spritePalette);
 
 	memcpy(ulist,updateListData,sizeof(updateListData));
-	set_vram_update(4,ulist);
+	set_vram_update(ulist);
 
 	ppu_on_all();
 }
@@ -288,7 +288,7 @@ void main(void)
 	while(1){
 		delay = delay + 1;
 		
-		ppu_waitnmi();
+		ppu_wait_nmi();
 
 		switch(STATE){
 			case ST_MENU:
