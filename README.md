@@ -18,13 +18,14 @@ Known issues :
 --------------
 - Collision issues with dwarves and fireballs
 - Glitching fireballs
-- Currently no sound working
 - Dirty code
 
 How to compile: download CC65 from http://cc65.org/, and see/modify build.bat according to your path settings.
 
 This project use Shiru's Neslib NES library, and an example project was used as startup code.
 More information about NES programming and tutorials on Shiru's website : http://shiru.untergrund.net
+
+Sound effects and Music are not by me but from one of Shiru's example projects.
 
 ***
 

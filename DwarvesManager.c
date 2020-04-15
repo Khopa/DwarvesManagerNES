@@ -113,6 +113,8 @@ void setGameState(){
 	vram_adr(NAMETABLE_A);
 	vram_unrle(map);
 
+	music_play(0);
+
 	// init dwarves
 	for(i=0;i<DWARVES_COUNT;i++){
 		X_POS[i] = 80 + i*35;
@@ -302,6 +304,7 @@ void main(void)
 				oam_meta_spr(xTitle,80,0,DWARVE_SPRITE_DATA[0]);
 				pad=pad_trigger(PLAYER_A); // PAD for player 1
 				if(pad&PAD_START){
+					sfx_play(0,0);
 					bright = 4;
 					endTimer = 0;
 					setInstructionsState();
@@ -329,6 +332,7 @@ void main(void)
 				// Dwarves selection
 				if(pad&PAD_SELECT){
 					if(selectDown == 0){
+						sfx_play(2,2);
 						selectNextDwarf();
 						selectDown = 1;
 					}
@@ -420,6 +424,7 @@ void main(void)
 						for(j=0;j<DWARVES_COUNT;j++){
 							if(ALIVE[j] && FIREBALL_X[i]+4 > X_POS[j]+4 && FIREBALL_X[i]+4 < X_POS[j]+20){
 								if(FIREBALL_Y[i]+4 > Y_POS[j]+4 && FIREBALL_Y[i]+4 < Y_POS[j]+20){
+									sfx_play(1,1);
 									ALIVE[j] = 0;
 									FIREBALL_ALIVE[j] = 0;
 									if(dwarvesCount() > 0) bright = 1;
@@ -448,6 +453,7 @@ void main(void)
 				else{
 					frameWithoutMove ++;
 					if((frameWithoutMove > 1 || canMine) && (pad&PAD_A && !aDown) && dwarvesCount() > 0){
+						sfx_play(3,3);
 						GOLD+=1;
 						frameWithoutMove = 0;
 						canMine = 1;
@@ -487,6 +493,7 @@ void main(void)
 				// Check dwarves
 				if(dwarvesCount()<=0){
 					endTimer++;
+					music_stop();
 					if(endTimer > 125){
 						setMenuState();
 					}
@@ -496,6 +503,7 @@ void main(void)
 			case ST_INSTRUCTIONS:
 				pad=pad_trigger(PLAYER_A); // PAD for player 1
 				if(pad&PAD_START){
+					sfx_play(0,0);
 					setGameState();
 				}
 			break;
