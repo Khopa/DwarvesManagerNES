@@ -18,8 +18,6 @@
 #include "sprites.h"
 
 #define NTADR(x,y) ((0x2000|((y)<<5)|x))
-#define MSB(x)		(((x)>>8))
-#define LSB(x)		(((x)&0xff))
 
 #define PLAYER_A 0x00
 #define ST_MENU  0x00
@@ -63,12 +61,9 @@ static unsigned char FIREBALL_LIVE[FIREBALL_MAX];
 static unsigned char FIREBALL_ALIVE[FIREBALL_MAX];
 
 // Update list
-static unsigned char ulist[4*3];
-const unsigned char updateListData[4*3]={
-	MSB(NTADR(12,2)),LSB(NTADR(12,2)),0,
-	MSB(NTADR(13,2)),LSB(NTADR(13,2)),0,
-	MSB(NTADR(14,2)),LSB(NTADR(14,2)),0,
-	MSB(NTADR(15,2)),LSB(NTADR(15,2)),0,
+static unsigned char ulist[8];
+const unsigned char updateListData[8] ={
+	MSB(NTADR(12,2))|NT_UPD_HORZ,LSB(NTADR(12,2)),4,0,0,0,0,NT_UPD_EOF
 };
 
 // Sprite palette
@@ -91,6 +86,7 @@ void setMenuState(){
 	ppu_off();
 	STATE = ST_MENU;
 	set_vram_update(NULL);
+	vram_adr(NAMETABLE_A);
 	vram_unrle(title);
 	pal_bright(4);
 	put_str(NTADR(6,16), "PRESS START TO BEGIN");
@@ -103,6 +99,7 @@ void setInstructionsState(){
 	ppu_off();
 	STATE = ST_INSTRUCTIONS;
 	set_vram_update(NULL);
+	vram_adr(NAMETABLE_A);
 	vram_unrle(instructions);
 	pal_bright(4);
 	ppu_on_all();
@@ -113,6 +110,7 @@ void setGameState(){
 	oam_clear();
 	ppu_off();
 	STATE = ST_GAME;
+	vram_adr(NAMETABLE_A);
 	vram_unrle(map);
 
 	// init dwarves
@@ -130,7 +128,7 @@ void setGameState(){
 	selected = 0;
 	pal_spr(spritePalette);
 
-	memcpy(ulist,updateListData,sizeof(updateListData));
+	memcpy(ulist,updateListData,sizeof(updateListData)+1);
 	set_vram_update(ulist);
 
 	ppu_on_all();
@@ -481,10 +479,10 @@ void main(void)
 				// Display GOLD score
 				// TODO : resolve counter glitch here
 				if(GOLD > 999) GOLD = 999;
-				ulist[2] =0x10;
-				ulist[5] =0x10+GOLD/100;
-				ulist[8] =0x10+GOLD/10%10;
-				ulist[11]=0x10+GOLD%10;
+				ulist[3] = 0x10;
+				ulist[4] = 0x10+GOLD/100;
+				ulist[5] = 0x10+GOLD/10%10;
+				ulist[6] = 0x10+GOLD%10;
 
 				// Check dwarves
 				if(dwarvesCount()<=0){
@@ -493,7 +491,6 @@ void main(void)
 						setMenuState();
 					}
 				}
-
 
 			break;
 			case ST_INSTRUCTIONS:

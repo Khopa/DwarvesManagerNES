@@ -13,6 +13,8 @@
 
 @ld65 -C nrom_128_horz.cfg -o DwarvesManager.nes crt0.o DwarvesManager.o runtime.lib || goto fail
 
+DwarvesManager.nes
+
 @goto exit
 
 :fail
