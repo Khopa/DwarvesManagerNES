@@ -21,4 +21,4 @@ pause
 
 :exit
 
-@del %1.s
+@del DwarvesManager.s
