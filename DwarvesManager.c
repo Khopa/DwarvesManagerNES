@@ -3,11 +3,8 @@
  * LUDUM DARE 29 - DWARVES MANAGER 2
  * by Clement "Khopa" Perreau  
  *
- * using neslib by Shiru (Thank you guy, you're awesome !)
- *
- * <troll>BECAUSE UNITY IS FOR NOOBS</troll>
- * Oh ! There is actually someone reading this source code ?
- * Thanks, but it's really messy down there ! :)
+ * Using the incredible neslib by Shiru (Thank you guy, you're awesome !)
+ * Sound effects and music are not by me but from one of shiru example projects.
  *
  */
 
@@ -30,14 +27,14 @@
 #define SCREEN_X_SIZE 256
 #define SCREEN_Y_SIZE 240
 
-#define TOP 5*8
-#define BOT 22*8
-#define LEF 6*8
-#define RIG 23*8
+#define TOP 7*8
+#define BOT 26*8
+#define LEF 2*8
+#define RIG 26*8
 
-// There is 9 sprites per dwarves
+// There is 9 sprites per dwarves (so 27)
 // 64 sprites is the max the NES can handle
-#define FIREBALL_MAX 64-DWARVES_COUNT*9
+#define FIREBALL_MAX 10
 
 // static
 static unsigned char pad;
@@ -68,9 +65,11 @@ const unsigned char updateListData[8] ={
 
 // Sprite palette
 const unsigned char spritePalette[16]={ 0x0f,0x06,0x16,0x27,0x0f,0x17,0x16,0x07,0x0f,0x27,0x26,0x16,0x0f,0x0f,0x21,0x30 };
+const unsigned char bgPalette[16]={ 0x0f,0x16,0x06,0x27,0x0f,0x27,0x17,0x07,0x0f,0x06,0x16,0x26,0x0f,0x20,0x0f,0x2d };
+
 
 /**
- * PUT A STRING ON SCREEN
+ * Put a String on the screen
  */
 void put_str(unsigned int adr,const char *str){
 	vram_adr(adr);
@@ -81,6 +80,8 @@ void put_str(unsigned int adr,const char *str){
 	}
 }
 
+
+
 void setMenuState(){
 	oam_clear();
 	ppu_off();
@@ -89,6 +90,7 @@ void setMenuState(){
 	vram_adr(NAMETABLE_A);
 	vram_unrle(title);
 	pal_bright(4);
+	pal_spr(spritePalette);
 	put_str(NTADR(6,16), "PRESS START TO BEGIN");
 	ppu_on_all();
 }
@@ -142,10 +144,12 @@ void spawnFireball(){
 	unsigned char rndY = 0;
 	unsigned char rndSide = rand8()%4;
 	unsigned char speed = 1;
-	if(GOLD > 250){
+	if(GOLD > 800){
 		speed = rand8()%3+1;
-	}else if(GOLD > 125){
+	}else if(GOLD > 250){
 		speed = rand8()%2+1;
+	}else {
+		speed = 1;
 	}
 	for(i = 0;i < FIREBALL_MAX; i++){
 		if(!FIREBALL_ALIVE[i]){
@@ -153,8 +157,8 @@ void spawnFireball(){
 				case 0: // SIDE UP
 					rndY = 0;
 					rndX = rand8()%(RIG-LEF)+LEF;
-					if(GOLD < 100){
-						FIREBALL_DX[i] = rand8()%(5)-2;
+					if(GOLD < 250){
+						FIREBALL_DX[i] = rand8()%(5);
 					}else{
 						FIREBALL_DX[i] = 0;
 					}
@@ -163,8 +167,8 @@ void spawnFireball(){
 				case 1: // SIDE DOWN
 					rndY = SCREEN_Y_SIZE;
 					rndX = rand8()%(RIG-LEF)+LEF;
-					if(GOLD < 100){
-						FIREBALL_DX[i] = rand8()%(5)-2;
+					if(GOLD < 250){
+						FIREBALL_DX[i] = rand8()%(5);
 					}else{
 						FIREBALL_DX[i] = 0;
 					}
@@ -174,8 +178,8 @@ void spawnFireball(){
 					rndY = rand8()%(BOT-TOP)+TOP;
 					rndX = 0;
 					FIREBALL_DX[i] = speed;
-					if(GOLD < 100){
-						FIREBALL_DY[i] = rand8()%(5)-2;
+					if(GOLD < 250){
+						FIREBALL_DY[i] = rand8()%(5);
 					}else{
 						FIREBALL_DY[i] = 0;
 					}
@@ -184,10 +188,10 @@ void spawnFireball(){
 					rndY = rand8()%(BOT-TOP)+TOP;
 					rndX = SCREEN_X_SIZE;
 					FIREBALL_DX[i] = -speed;
-					if(GOLD < 100){
-						FIREBALL_DY[i] = rand8()%(5)-2;
+					if(GOLD < 250){
+						FIREBALL_DY[i] = rand8()%(5);
 					}else{
-						FIREBALL_DX[i] = 0;
+						FIREBALL_DY[i] = 0;
 					}
 				break;
 			}
@@ -269,15 +273,12 @@ void main(void)
 	unsigned char maxSpr = 0;
 	unsigned char bright = 4;
 	unsigned char brightnessInc = 1;
+	unsigned char initScroll = 255;
 	int spr = 0;
 
 	// Set palette colors
-	for(i = 0; i<8; i++){
-		tmp = i*4;
-		pal_col(tmp,0x0F);
-		pal_col(tmp+1,0x06);
-		pal_col(tmp+2,0x16);
-		pal_col(tmp+3,0x27);	
+	for(i = 0; i<16; i++){
+		pal_col(i,bgPalette[i]);
 	}
 	
 	setMenuState();
@@ -308,6 +309,10 @@ void main(void)
 					bright = 4;
 					endTimer = 0;
 					setInstructionsState();
+				}
+				if(initScroll > 0){
+					initScroll-=5;
+					scroll(initScroll,0);
 				}
 			break;
 			case ST_GAME:
@@ -341,8 +346,8 @@ void main(void)
 				}
 
 				// Controlling dwarf
-				tmp = 1;
-				if(pad&PAD_B) tmp = 2;
+				tmp = 2;
+				if(pad&PAD_B) tmp = 4;
 				if(pad&PAD_LEFT)  X_POS[selected] = X_POS[selected]-tmp;
 				if(pad&PAD_RIGHT) X_POS[selected] = X_POS[selected]+tmp;
 				if(pad&PAD_UP)    Y_POS[selected] = Y_POS[selected]-tmp;
@@ -367,23 +372,23 @@ void main(void)
 				if(GOLD < 10){
 					// do nothing
 				}else if(GOLD < 35){
-					if(rand8()>250 & tmp<5){
-						spawnFireball();
-					}
-				}else if(GOLD < 100){
-					if(rand8()>245 & tmp<7){
+					if(rand8()>253 & tmp<2){
 						spawnFireball();
 					}
 				}else if(GOLD < 150){
-					if(rand8()>240 & tmp<12){
+					if(rand8()>245 & tmp<3){
 						spawnFireball();
 					}
-				}else if(GOLD < 225){
-					if(rand8()>235 & tmp<15){
+				}else if(GOLD < 300){
+					if(rand8()>242 & tmp<6){
+						spawnFireball();
+					}
+				}else if(GOLD < 500){
+					if(rand8()>240 & tmp<8){
 						spawnFireball();
 					}
 				}else{
-					if(rand8()>220 & tmp<25){
+					if(rand8()>237 & tmp<10){
 						spawnFireball();
 					}
 				}
@@ -412,27 +417,32 @@ void main(void)
 
 				// Display fireballs
 				for(i = 0; i < FIREBALL_MAX; i++){
-					if(FIREBALL_ALIVE[i]){
-						spr = oam_spr(FIREBALL_X[i],FIREBALL_Y[i],0x40,4,spr);
+					if(FIREBALL_ALIVE[i] > 0){
 						FIREBALL_X[i] = FIREBALL_X[i] + FIREBALL_DX[i];
 						FIREBALL_Y[i] = FIREBALL_Y[i] + FIREBALL_DY[i];
 						FIREBALL_LIVE[i] = FIREBALL_LIVE[i] + 1;
-						if(FIREBALL_LIVE[i] > 128){
+						if(FIREBALL_LIVE[i] >= 255){
 							FIREBALL_ALIVE[i] = 0;
 						}
 						// DO collision with dwarves in the same loop
 						for(j=0;j<DWARVES_COUNT;j++){
-							if(ALIVE[j] && FIREBALL_X[i]+4 > X_POS[j]+4 && FIREBALL_X[i]+4 < X_POS[j]+20){
-								if(FIREBALL_Y[i]+4 > Y_POS[j]+4 && FIREBALL_Y[i]+4 < Y_POS[j]+20){
+
+							if(FIREBALL_X[i] < 0 || FIREBALL_X[i] > SCREEN_X_SIZE){
+								FIREBALL_ALIVE[i] = 0;
+							}else if(FIREBALL_Y[i] < 0 || FIREBALL_Y[i] > SCREEN_Y_SIZE){
+								FIREBALL_ALIVE[i] = 0;
+							}else if(ALIVE[j] && FIREBALL_X[i]+4 > X_POS[j] && FIREBALL_X[i]+4 < X_POS[j]+24){
+								if(FIREBALL_Y[i]+4 > Y_POS[j] && FIREBALL_Y[i]+4 < Y_POS[j]+24){
 									sfx_play(1,1);
 									ALIVE[j] = 0;
-									FIREBALL_ALIVE[j] = 0;
+									FIREBALL_ALIVE[i] = 0;
 									if(dwarvesCount() > 0) bright = 1;
 									else bright = 5;
 									selectNextDwarf();
 								}
 							}
 						}
+						spr = oam_spr(FIREBALL_X[i],FIREBALL_Y[i],0x40,4,spr);
 					}
 				}
 
@@ -481,12 +491,10 @@ void main(void)
 					aDown=0;
 				}
 
-
 				// Display GOLD score
-				// TODO : resolve counter glitch here
-				if(GOLD > 999) GOLD = 999;
-				ulist[3] = 0x10;
-				ulist[4] = 0x10+GOLD/100;
+				if(GOLD > 9999) GOLD = 9999;
+				ulist[3] = 0x10+GOLD/1000;
+				ulist[4] = 0x10+GOLD/100%10;
 				ulist[5] = 0x10+GOLD/10%10;
 				ulist[6] = 0x10+GOLD%10;
 
