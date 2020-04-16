@@ -276,6 +276,7 @@ void main(void)
 	unsigned char brightnessInc = 1;
 	unsigned char initScroll = 255;
 	int spr = 0;
+	unsigned char fireballSprite = 0x40;
 
 	// Set palette colors
 	for(i = 0; i<16; i++){
@@ -325,6 +326,14 @@ void main(void)
 
 				// Poll pad
 				pad=pad_poll(PLAYER_A);
+
+				if(frame%6 == 0){
+					if(fireballSprite == 0x40){
+						fireballSprite = 0x50;
+					}else{
+						fireballSprite = 0x40;
+					}
+				}
 
 				if(frame > 24 && bright < 4 && endTimer == 0)
 				{
@@ -446,7 +455,7 @@ void main(void)
 								}
 							}
 						}
-						spr = oam_spr(FIREBALL_X[i],FIREBALL_Y[i],0x40,4,spr);
+						spr = oam_spr(FIREBALL_X[i],FIREBALL_Y[i],fireballSprite,4,spr);
 					}
 				}
 
