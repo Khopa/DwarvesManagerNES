@@ -14,23 +14,24 @@ How to play :
 - Maintain B to run
 - Avoid the fireballs and get as much gold as you can
 
-
-How to compile: download CC65 from http://cc65.org/, and see/modify build.bat according to your path settings.
-
 This project use Shiru's Neslib NES library, and an example project was used as startup code.
 More information about NES programming and tutorials on Shiru's website : http://shiru.untergrund.net
 
+**How to compile:**
+Download CC65 compiler from ftp://ftp.musoftware.de/pub/uz/cc65/ and see/modify _compile.bat according to your path settings.
+CC65 v2.13.3 must be used. Do not use a more recent version.
+
 Sound effects and Music are not by me but from one of Shiru's example projects.
 
-History : 
+History :
 ---------
 
-The original Ludum Dare game jam entry had no sounds nor music, and very glitchy collision that only worked once in while.
+The original Ludum Dare game jam entry had no sounds nor music, and a very glitchy collision system that only worked once in while.
 The biggest issues have now been fixed in the new version... 6 years later.
 
 ***
 
-Results obtained : 
+Results obtained :
 ------------------
 
 *Coolness*	75%
