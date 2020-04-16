@@ -91,7 +91,6 @@ void setMenuState(){
 	vram_unrle(title);
 	pal_bright(4);
 	pal_spr(spritePalette);
-	put_str(NTADR(6,16), "PRESS START TO BEGIN");
 	ppu_on_all();
 }
 
@@ -105,6 +104,7 @@ void setInstructionsState(){
 	vram_unrle(instructions);
 	pal_bright(4);
 	ppu_on_all();
+	scroll(0,0);
 }
 
 void setGameState(){
@@ -134,8 +134,9 @@ void setGameState(){
 
 	memcpy(ulist,updateListData,sizeof(updateListData)+1);
 	set_vram_update(ulist);
-
+	
 	ppu_on_all();
+	scroll(0,0);
 }
 
 void spawnFireball(){
@@ -293,8 +294,6 @@ void main(void)
 
 		switch(STATE){
 			case ST_MENU:
-				GOLD = 0;
-				bright = 4;
 				if(goingRight){
 					xTitle = xTitle+1;
 					if(xTitle>170) goingRight = 0;
@@ -304,7 +303,7 @@ void main(void)
 				}
 				oam_meta_spr(xTitle,80,0,DWARVE_SPRITE_DATA[0]);
 				pad=pad_trigger(PLAYER_A); // PAD for player 1
-				if(pad&PAD_START){
+				if(pad&PAD_START && initScroll <= 0){
 					sfx_play(0,0);
 					bright = 4;
 					endTimer = 0;
@@ -313,6 +312,11 @@ void main(void)
 				if(initScroll > 0){
 					initScroll-=5;
 					scroll(initScroll,0);
+					if(initScroll == 0){
+						ppu_off();
+						put_str(NTADR(6,16), "PRESS START TO PLAY");
+						ppu_on_all();
+					}
 				}
 			break;
 			case ST_GAME:
@@ -504,12 +508,16 @@ void main(void)
 					music_stop();
 					if(endTimer > 125){
 						setMenuState();
+						ppu_off();
+						put_str(NTADR(4,16), "PRESS START TO TRY AGAIN");
+						ppu_on_all();
 					}
 				}
 
 			break;
 			case ST_INSTRUCTIONS:
-				pad=pad_trigger(PLAYER_A); // PAD for player 1
+				scroll(0,0);
+				pad=pad_trigger(PLAYER_A); // PAD for player 1xx
 				if(pad&PAD_START){
 					sfx_play(0,0);
 					setGameState();

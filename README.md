@@ -14,11 +14,6 @@ How to play :
 - Maintain B to run
 - Avoid the fireballs and get as much gold as you can
 
-Known issues :
---------------
-- Collision issues with dwarves and fireballs
-- Glitching fireballs
-- Dirty code
 
 How to compile: download CC65 from http://cc65.org/, and see/modify build.bat according to your path settings.
 
@@ -26,6 +21,12 @@ This project use Shiru's Neslib NES library, and an example project was used as 
 More information about NES programming and tutorials on Shiru's website : http://shiru.untergrund.net
 
 Sound effects and Music are not by me but from one of Shiru's example projects.
+
+History : 
+---------
+
+The original Ludum Dare game jam entry had no sounds nor music, and very glitchy collision that only worked once in while.
+The biggest issues have now been fixed in the new version... 6 years later.
 
 ***
 
