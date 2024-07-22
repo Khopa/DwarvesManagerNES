@@ -14,7 +14,7 @@ How to play :
 - Maintain B to run
 - Avoid the fireballs and get as much gold as you can
 
-This project use Shiru's Neslib NES library, and an example project was used as startup code.
+This project uses Shiru's Neslib NES library, and an example project was used as startup code.
 More information about NES programming and tutorials on Shiru's website : http://shiru.untergrund.net
 
 **How to compile:**
